@@ -27,6 +27,6 @@ foreach ($name in 'req-closeloop', 'bug-closeloop') {
 ## 接自己的项目，不上传项目资料
 
 - 有项目卡、工作树映射或会话 hook 的，沿用已有配置。否则可设置环境变量 `WORK_SKILLS_LIBRARY` 指向**业务仓库之外**的私有资料库。其 `映射.json` 示例为 `{"projects":{"示例项目":["/work/example-project"]}}`；将示例路径换成本机真实规则根，在 `示例项目/项目卡.md` 记录分支约定、验证环境及登录渠道。只有要用到的资料才需要准备。
-- **TAPD MCP** 负责读取原单及图片；浏览器只用于业务页面复现与验收，遵循项目规定或本机 `browser-routing`。缺少真实数据或权限时明确标「未验证」。
-- **迭代操作只走 QE CLI**，先读本机 `qe guide`。分支与 MR 都把原单交给 QE，不自行建分支；写操作按当前 CLI 预览、确认。交付次序使用 `ship`，TAPD 评论、流转及工时使用 `tapd-wrapup`；需要时由项目的工具安装包另行配置。只读分析不用先安装所有交付工具。
-- 给后端的交接可以配合 `handoff-doc`，字段要求在缺陷 skill 内已列明。两套 skill 不内置环境账号、私有端点或生产配置；这些只在各自的项目环境中维护。
+- **TAPD MCP** 负责读取原单及图片；浏览器只用于业务页面复现与验收，遵循项目规定或本机 [browser-routing](../support-skills/browser-routing/SKILL.md)。缺少真实数据或权限时明确标「未验证」。
+- **迭代操作只走 QE CLI**，先读本机 `qe guide`。分支与 MR 都把原单交给 QE，不自行建分支；写操作按当前 CLI 预览、确认。交付次序使用 [ship](../delivery-skills/ship/SKILL.md)，TAPD 评论、流转及工时使用 [tapd-wrapup](../delivery-skills/tapd-wrapup/SKILL.md)。只读分析不用先安装所有交付工具。
+- 给后端的交接可以配合 [handoff-doc](../support-skills/handoff-doc/SKILL.md)，字段要求在缺陷 skill 内已列明。两套 skill 不内置环境账号、私有端点或生产配置；这些只在各自的项目环境中维护。
