@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>Herdr 使用手册｜从一句委托到一份可核对的结果</title>
+<style>
+:root{color-scheme:light dark;--foreground:#1c3430;--muted:#526762;--primary:#046052;--secondary:#e8efec;--border:#bacbc4;--card:#f3f7f4;--accent:#823e21;--accent-surface:#f8eee5;--ring:#197d70;--code-background:#eaf0ec;--radius:12px;--font-sans:"Segoe UI","Microsoft YaHei","PingFang SC",system-ui,sans-serif;--font-mono:Consolas,"Cascadia Code",monospace}
+@media(prefers-color-scheme:dark){:root{--foreground:#e8efeb;--muted:#b0c2ba;--primary:#8fe2c8;--secondary:#273b35;--border:#476259;--card:#1c2d27;--accent:#ffbd96;--accent-surface:#382b24;--ring:#94dcca;--code-background:#273831}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-block-start:12px}
+body{margin:0;color:var(--foreground);font:16px/1.72 var(--font-sans);overflow-wrap:break-word}
+.page{width:min(94%,1000px);margin-inline:auto}
+.mast{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:24px 0 12px;border-bottom:2px solid var(--foreground)}
+.mast b,.kicker,.num,.rail a span,.tag,.flow-name,.edition{font:700 .76rem/1.5 var(--font-mono);letter-spacing:.09em}
+.mast b{display:flex;align-items:center;gap:8px;font-size:.9rem}.mark{width:1.1em;height:1.1em;color:var(--primary)}
+.edition,.kicker,.num,.flow-name{color:var(--muted)}.intro{padding:clamp(28px,5vw,56px) 0 29px;max-width:850px}
+h1,h2,h3,p,ul,ol,dl,dd,blockquote,figure{margin:0}
+h1{font-size:clamp(2rem,5.7vw,3.85rem);letter-spacing:-.06em;line-height:1.16;font-weight:720;margin:.12em 0 .32em;text-wrap:balance}
+.lead{font-size:clamp(1rem,2.35vw,1.23rem);color:var(--muted);max-width:38em}.lead strong{color:var(--foreground)}
+.layout{display:grid;grid-template-columns:150px minmax(0,1fr);gap:clamp(28px,6vw,66px);padding-bottom:34px}
+.rail{align-self:start;position:sticky;top:16px;border-top:1px solid var(--border);padding-top:12px}
+.rail p{font-size:.8rem;font-weight:700;color:var(--muted);margin-bottom:10px}
+.rail a{display:flex;gap:.6em;color:var(--foreground);text-decoration:none;padding:5px 0;font-size:.91rem}
+.rail a span{color:var(--muted);padding-top:.4em;font-size:.68rem}.rail a:hover,.rail a:focus-visible{color:var(--primary);text-decoration:underline}
+main{min-width:0}section{border-top:1px solid var(--border);padding:20px 0 29px}
+.heading{display:flex;gap:14px;align-items:baseline;margin-bottom:12px}.num{color:var(--primary);white-space:nowrap}
+h2{font-size:clamp(1.28rem,3vw,1.7rem);line-height:1.35;letter-spacing:-.03em;text-wrap:balance}
+h3{font-size:1.04rem;line-height:1.5}.body-text,.note{color:var(--muted)}.note{font-size:.91rem;margin-top:12px}
+.ticket{border-left:4px solid var(--primary);border-radius:0 var(--radius) var(--radius) 0;background:var(--card);padding:17px 20px;margin:14px 0}
+.tag{color:var(--primary);display:block;font-size:.7rem;margin-bottom:6px}
+blockquote{font-size:1.06rem;font-weight:620;line-height:1.65}.ticket p{color:var(--muted);margin-top:8px;font-size:.94rem}
+.recipe{display:flex;align-items:baseline;flex-wrap:wrap;gap:4px 9px;color:var(--primary);font-weight:700;font-size:.94rem}.recipe i{font:normal 1rem var(--font-mono);color:var(--muted)}
+.flow{padding:0;list-style:none;counter-reset:lane;margin:10px 0 6px}
+.flow li{display:grid;grid-template-columns:minmax(100px,23%) 1fr;gap:13px;border-bottom:1px solid var(--border);padding:10px 0;line-height:1.55}
+.flow b{color:var(--primary)}.flow-name{display:block;font-size:.7rem;letter-spacing:.035em}
+code,kbd,pre{font-family:var(--font-mono)}code{font-size:.87em;overflow-wrap:anywhere}p code,td code,summary code,dd code{background:var(--code-background);padding:1px 4px;border-radius:3px}
+.modeltable{border-collapse:collapse;width:100%;font-size:.94rem;line-height:1.5;margin:12px 0}
+th,td{text-align:left;vertical-align:top;padding:8px 7px;border-bottom:1px solid var(--border)}
+th{font-size:.82rem;color:var(--muted);border-bottom-width:2px}th:first-child,td:first-child{padding-left:0}
+.modeltable td:first-child{font-weight:650}.modeltable td:last-child span{display:block;color:var(--muted);font:normal .78rem/1.55 var(--font-mono);overflow-wrap:anywhere}
+.cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:14px}
+.case{background:var(--card);border-top:3px solid var(--primary);padding:16px;border-radius:0 0 var(--radius) var(--radius)}
+.case blockquote{font-size:.97rem;margin:9px 0}.case p{font-size:.92rem;color:var(--muted)}
+.terms>div{display:grid;grid-template-columns:minmax(108px,24%) 1fr;gap:14px;padding:9px 0;border-bottom:1px solid var(--border);line-height:1.55}
+dt{font-weight:700}dd{color:var(--muted)}.signal{background:var(--accent-surface);padding:12px 16px;border-radius:var(--radius);margin-top:14px}.signal b{color:var(--accent)}
+details{border:1px solid var(--border);border-radius:var(--radius);margin-top:13px;padding:0 14px}
+summary{cursor:pointer;color:var(--primary);font-weight:650;padding:10px 0}details[open]{padding-bottom:12px}
+pre{font-size:.86rem;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;background:var(--code-background);padding:10px 13px;margin:6px 0;border-radius:6px}pre code{font:inherit}
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;border-top:1px solid var(--border);padding:14px 0 24px;color:var(--muted);font-size:.8rem}
+a{color:var(--primary);text-underline-offset:.15em}a:focus-visible,summary:focus-visible{outline:2px solid var(--ring);outline-offset:3px}
+@media(max-width:780px){.page{width:96%}.layout{display:block}.rail{position:static;display:flex;gap:4px 18px;flex-wrap:wrap;padding:8px 0 13px}.rail p{display:none}.rail a{font-size:.86rem}.rail a span{font-size:.67rem}.intro{padding-bottom:19px}}
+@media(max-width:550px){.page{width:94%}.cases{grid-template-columns:1fr}.flow li,.terms>div{grid-template-columns:104px minmax(0,1fr);gap:10px}.modeltable{font-size:.86rem}.modeltable th,.modeltable td{padding-inline:3px}.modeltable td:last-child span{font-size:.72rem}.ticket{padding:14px}.mast{padding-top:15px}.edition{letter-spacing:0}.rail{gap:0 12px}.heading{gap:10px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media print{:root{color-scheme:light;--foreground:#142622;--muted:#354840;--primary:#164d42;--card:#fff;--secondary:#fff;--border:#9aaba2;--accent:#61361d;--code-background:#fff;--accent-surface:#fff}body{font-size:10.5pt}.page{width:100%}.layout{display:block}.rail,footer a{display:none}.intro{padding:14pt 0}.mast{padding-top:0}h1{font-size:29pt}section{padding:12pt 0}.case,.ticket,dl>div,tr{break-inside:avoid}h2,h3{break-after:avoid}.cases{display:block}.case+.case{margin-top:8pt}details{display:none}@page{margin:16mm}}
+</style>
+</head>
+<body id="top"><div class="page">
+<header class="mast"><b><svg class="mark" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 3v18m8-18v18m8-18v18M4 8h8m0 8h8"/></svg>HERDR</b><span class="edition">工作流手册 · 项目交付</span></header>
+<div class="intro"><div class="kicker">给使用者</div><h1>一句话交办需求和缺陷</h1><p class="lead">在 Claude Code 或 Codex 的对话里说<strong>“启用 SuperAgent 模式”</strong>，然后贴 TAPD 链接或附上 Excel。这个对话就是入口，不用自己开 Router、跑命令或选模型。</p></div>
+<div class="layout">
+<nav class="rail" aria-label="本页目录"><p>本页目录</p><a href="#ask"><span>01</span>怎么下单</a><a href="#flow"><span>02</span>谁在做什么</a><a href="#models"><span>03</span>怎么配模型</a><a href="#projects"><span>04</span>项目与迭代规则</a><a href="#result"><span>05</span>怎么看结果</a></nav>
+<main>
+<section id="ask" aria-labelledby="h-ask"><div class="heading"><span class="num">01 /</span><h2 id="h-ask">发链接，或者把缺陷表拖进对话</h2></div>
+<div class="ticket"><span class="tag">做一个或多个需求</span><blockquote>启用 SuperAgent 模式做需求：〈TAPD 需求链接〉、〈另一个需求链接〉。做到可提交，不推送。</blockquote><p>只有一个就发一个。没有 TAPD 单也可以描述具体需求；系统不会替你编一个单号。</p></div>
+<div class="ticket"><span class="tag">修一批缺陷</span><blockquote>启用 SuperAgent 模式，修一波 bug，链接在附件 Excel 里。</blockquote><p>直接附 <code>.xlsx</code> / <code>.xlsm</code>，也可以粘贴多条缺陷链接，或文件、链接一起发。只做部分行时说清表名和范围。系统去重、按工作区分项目，用 TAPD 读取原单，不改原表。旧 <code>.xls</code> 请先另存为 <code>.xlsx</code>。</p></div>
+<p class="body-text">普通用户无需准备清单或配置。项目认不清、链接无权限、附件读不到，只问对应项；其余能做的继续。想限制范围，就在同一句加“只分析”“只改后端”或“不要发版”。</p>
+<details><summary>如果我只是想看进度呢？</summary><p>说“启用 SuperAgent 模式，只按现有报告汇总这几条的进度，不要重测”。入口只读原记录。批次里会分开列待办、在做、已交回和受阻；收进清单不代表已修复。一个批次可以有多个需求，不必强行并成一条项目任务。</p></details></section>
+<section id="flow" aria-labelledby="h-flow"><div class="heading"><span class="num">02 /</span><h2 id="h-flow">你对接一个入口，不用盯每个窗口</h2></div>
+<ol class="flow">
+<li><div><b>入口</b><span class="flow-name">Router</span></div><div>判断是问现状、续办已有需求，还是开始新委托。简单问题直接答；多项需求在这里分流。只做一项完整需求时，也可以直接找 leader。</div></li>
+<li><div><b>负责人</b><span class="flow-name">Leader</span></div><div>找出项目原任务、依赖、验收和停止点。一项需求用一条 Thread（任务线）串起多个仓库：读规则去项目根，写代码只去任务登记的独立工作树，不另造一套任务表。</div></li>
+<li><div><b>执行与复核</b><span class="flow-name">Workers</span></div><div>开发做改动和自测，复审独立看风险，测试按授权验证。不同工作树可并行，同一个工作树只安排一个写入者。已有项目审查步骤，不再为相同目的多审一轮。</div></li>
+<li><div><b>回到入口</b><span class="flow-name">Handoff</span></div><div>负责人把结论、版本、证据和未完成项交回来。有产品口径或权限需要你决定时，告诉你具体问题；不会用模型猜测替你拍板。</div></li></ol>
+<details><summary>有 MR、CI 消息，或者任务卡住时呢？</summary><p>配置了 Trigger 才会采集外部消息。事件先存入本地队列，有运行中的负责人就交给他，无主事件交 Router。后台 driver 接续待启动任务、投递事件、观察状态；可选的语义 Watchdog 分析异常。外部评论可以提供线索，不能替你授权。消息显示“已投递”也不等于执行者已接单，更不等于工作完成。</p></details>
+</section>
+<section id="models" aria-labelledby="h-models"><div class="heading"><span class="num">03 /</span><h2 id="h-models">主控和浏览器固定，开发与复审可互换</h2></div>
+<p class="body-text">一句话入口自动给后续派工选 <code>delivery</code>，不用报模型名。当前对话负责接单，沿用自己的模型；下表是随包样例，实际使用须先在本机提供方配置好这些模型别名或替换为可用别名。模型是干活的引擎，Codex 和 Claude Code 是提供工具的客户端。</p>
+<table class="modeltable" aria-label="delivery 默认配置"><thead><tr><th scope="col">工作</th><th scope="col">客户端</th><th scope="col">默认模型 / Magpie 路由</th></tr></thead><tbody>
+<tr><td>主控、跨仓裁决</td><td>Codex</td><td>GPT‑6.2 Astra<span>codex/gpt-6.2-astra</span></td></tr>
+<tr><td>开发、自测、重构</td><td>Claude Code</td><td>提供方自动路由<span>group/group</span></td></tr>
+<tr><td>独立复审</td><td>Claude Code</td><td>SWE‑2<span>devin/swe-2</span></td></tr>
+<tr><td>入口、调研、普通测试、语义巡检</td><td>Claude Code</td><td>DeepSeek V4.1 Flash<span>auto/deepseek-v4.1-flash</span></td></tr>
+<tr><td>浏览器验收</td><td>Codex</td><td>GPT‑6.2 Sol<span>codex/gpt-6.2-sol</span></td></tr>
+</tbody></table>
+<p><strong>“这轮开发和复审互换。”</strong> 新流程选 <code>delivery-swapped</code>：SWE‑2 开发，自动路由复审。只换模型，不换职责、权限和验收标准。可用模型和自动路由策略取决于你的提供方配置。</p>
+<p class="note"><strong>什么时候用 Sol？</strong> 已有脚本能断言的回归直接跑脚本。需要真人视角操作页面时，负责人给新测试会话传 <code>-Purpose browser</code>，用项目指定的浏览器工具。例如保存审批后重新打开单据，核对状态和权限，而不是只凭“保存成功”提示判通过。</p>
+<details><summary>PowerShell：只预览模型配置</summary><pre><code>$sa = "$HOME/.claude/skills/herdr/scripts/sa-state.ps1"
+pwsh -File $sa profile show --workflow-profile delivery
+pwsh -File $sa profile show --workflow-profile delivery-swapped</code></pre><p class="note">两条命令只展示配置，不启动模型。启动时由入口选 <code>-WorkflowProfile</code>；子任务继承本轮快照，已有会话不会因改配置而换模型。</p></details>
+</section>
+<section id="projects" aria-labelledby="h-projects"><div class="heading"><span class="num">04 /</span><h2 id="h-projects">做事按项目，迭代走质效平台</h2></div>
+<p class="body-text">Router 先到项目规则根目录找适用于这张单的工作流；工作树里没找到，不代表项目没有。<strong>项目有流程就接续原阶段；确认没有适用流程时，需求走全局 <code>req-closeloop</code>，缺陷走 <code>bug-closeloop</code>。</strong> 已有项目流程但入口不可用，或还没获准进入下一阶段，就停在那一步。</p>
+<div class="cases">
+<article class="case"><span class="tag">按任务表协作 · OpenSpec</span><h3>看清任务依赖，不等于开工</h3><blockquote>“只分析这条需求的导入和预览能否并行，不开工。”</blockquote><p>读原任务表和工作树映射。接口已定稿的部分可以并行，等待前置结果的部分列出依赖。项目要求明确点名实施阶段，就不会从分析自动进入写代码。</p></article>
+<article class="case"><span class="tag">跨仓需求 · 前后端接力</span><h3>两个仓库，不必全员互等</h3><blockquote>“按已审方案做前后端，只用需求工作树，做到可提交就停。”</blockquote><p>沿用项目实施流程和原任务号。接口已定稿的前端任务可与后端并行；未定稿的只等自己的契约。负责人统一更新交付清单。只授权后端时，报告前端影响而不改前端。</p></article>
+</div>
+<div class="signal"><b>分支和 MR 只由 QE 办。</b> 你发的是 bug，负责人就把这张 TAPD 缺陷原单和目标仓交给 <code>qe</code>。若 QE 判定关联需求，已有需求分支直接复用；某个仓还缺，则按 QE 返回的需求为那个仓申请。独立缺陷也按 QE 的方案走，不让 agent 自拟名字、用 Git 建分支。</div>
+<p class="note">“做到可提交”就停在可提交。你要求提 MR 时，负责人用 QE 核对源分支、目标和审批人，先展示平台预览；你确认这份预览后，才执行对应操作。预览参数变了要重新确认，不能改走 GitLab 网页或其他工具。批量单据中拿不准的一项单独等你，不耽误其他项。</p>
+</section>
+<section id="result" aria-labelledby="h-result"><div class="heading"><span class="num">05 /</span><h2 id="h-result">看证据，也看它停在哪里</h2></div>
+<div class="signal"><b>一份合格的回报：</b>改了什么、对应哪个版本、实际跑了多少用例、哪些失败或跳过、证据在哪里，以及这次有没有提交或发版。</div>
+<dl class="terms">
+<div><dt>本轮交回<br><code>HANDOFF</code></dt><dd>做到了你约定的停止点。例如“可提交，真机 16/18，两项跳过”。这可以是一次完整的进度汇报，但不是全部用例通过，也不是已提交或已发布。</dd></div>
+<div><dt>等你 / 暂停</dt><dd><code>WAITING_HUMAN</code> 是需要你作决定，<code>PAUSED</code> 是已暂停，<code>BLOCKED</code> 是暂时无法推进。你说“停测，给我交接”，交回的应是现有证据、缺口和下一步，而不是又跑一轮。</dd></div>
+<div><dt>完整验收<br><code>CLOSED</code></dt><dd>通用完整开发链要经过实现完成、复审通过、确认当前运行版本、测试通过，负责人终审后才关闭。项目专用委托按原项目规则交回，不用凑齐一排 PASS 才能结束。</dd></div></dl>
+</section>
+</main></div>
+<footer><span>Herdr · 项目工作流使用说明</span><a href="#top">回到开头 ↑</a></footer>
+</div></body></html>

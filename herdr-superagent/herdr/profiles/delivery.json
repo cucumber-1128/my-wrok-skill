@@ -1,0 +1,19 @@
+{
+  "name": "delivery",
+  "roles": {
+    "leader":        {"harness": "codex",  "model": "codex/gpt-6.2-astra"},
+    "router":        {"harness": "claude", "model": "auto/deepseek-v4.1-flash"},
+    "dev-worker":    {"harness": "claude", "model": "group/group"},
+    "implementer":   {"harness": "claude", "model": "group/group"},
+    "simplifier":    {"harness": "claude", "model": "group/group"},
+    "scout":         {"harness": "claude", "model": "auto/deepseek-v4.1-flash"},
+    "review-worker": {"harness": "claude", "model": "devin/swe-2"},
+    "reviewer":      {"harness": "claude", "model": "devin/swe-2"},
+    "test-worker":   {"harness": "claude", "model": "auto/deepseek-v4.1-flash"},
+    "tester":        {"harness": "claude", "model": "auto/deepseek-v4.1-flash"},
+    "watchdog":      {"harness": "claude", "model": "auto/deepseek-v4.1-flash"}
+  },
+  "purposes": {
+    "browser": {"harness": "codex", "model": "codex/gpt-6.2-sol"}
+  }
+}
